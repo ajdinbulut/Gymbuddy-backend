@@ -37,6 +37,7 @@ namespace Gymbuddy.Controllers
             var hash = Cryptography.Hash.Create(mod.password, salt);
             model.PasswordSalt = salt;
             model.PasswordHash = hash;
+            model.ImageUrl = "/images/profilePhotos/profile.jpg";
             model.Age = mod.age;
             model.Email = mod.email;
             model.FirstName = mod.firstname;
@@ -74,6 +75,19 @@ namespace Gymbuddy.Controllers
             }
             return NotFound();
         }
+        [HttpPut("Edit")]
+        public IActionResult Edit([FromForm]EditUser editAcc)
+        {
+            var user = _db.Users.Find(editAcc.Id);
+            user.FirstName = editAcc.Firstname;
+            user.LastName = editAcc.Lastname;
+            user.UserName = editAcc.Username;
+            user.Email = editAcc.Email;
+            user.Age = editAcc.Age;
+            _db.Users.Update(user);
+            _db.SaveChanges();
+            return Ok(user);
+        }
 
         private object Generate(User user)
         {
@@ -88,6 +102,7 @@ namespace Gymbuddy.Controllers
                 new Claim("FirstName", user.FirstName),
                 new Claim("Roles", roles.ToString()),
                 new Claim("Id",user.Id.ToString()),
+                new Claim("ProfilePhoto",user.ImageUrl),
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],

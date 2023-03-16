@@ -25,36 +25,4 @@
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\images\02925a13-f631-4e07-a2fb-db17263899fe.jpg" />
-    <None Include="wwwroot\images\12d5fc9c-273e-4c2f-bc32-9694a8a34204.jpg" />
-    <None Include="wwwroot\images\1505d046-4cc6-4900-b23a-148c89642864.jpg" />
-    <None Include="wwwroot\images\154e345c-5ba4-4ecb-b8dc-baae239b2714.png" />
-    <None Include="wwwroot\images\1ca1c4ef-c4c9-4d86-806a-855dd4bf1a86.jpg" />
-    <None Include="wwwroot\images\25889a93-8c96-4ce9-8b25-35cb87de42cb.png" />
-    <None Include="wwwroot\images\32a3ac1b-edd7-4bfd-a1f1-ef50f1b48dd6.jpg" />
-    <None Include="wwwroot\images\35c623dc-5c99-4234-9be4-ff193e261579.png" />
-    <None Include="wwwroot\images\3ced3e27-1ba5-40ef-a222-c7aec3dd20ff.jpg" />
-    <None Include="wwwroot\images\44616d53-aae1-4fc0-8d86-e8b9983b874f.jpg" />
-    <None Include="wwwroot\images\53996efd-4f8c-40dd-9240-5dc6ef12cb7b.jpg" />
-    <None Include="wwwroot\images\5fe3f252-d6d4-435e-b0cd-a59d9a51ad0c.jpg" />
-    <None Include="wwwroot\images\6132bd6b-edbd-48da-93a8-0baf5c4bcf41.jpg" />
-    <None Include="wwwroot\images\6ce2e508-855b-4548-92d7-557b0e6f9b94.png" />
-    <None Include="wwwroot\images\71f7d2bf-da4c-4cf7-9b57-a3c5aaf77df7.jpg" />
-    <None Include="wwwroot\images\7544a45c-0b2e-41d1-b472-a6ce559a56ea.png" />
-    <None Include="wwwroot\images\8038f711-43ae-4013-834a-ade48f3a118e.jpg" />
-    <None Include="wwwroot\images\967b9bde-891c-46ea-9f15-c960c9a36f24.jpg" />
-    <None Include="wwwroot\images\b4db4623-50f2-4261-8f7f-d0a2bf3cf2de.png" />
-    <None Include="wwwroot\images\bfd6edc7-80a4-4a65-9838-0e6aefa3cdde.png" />
-    <None Include="wwwroot\images\c2b23bdf-b9ce-45a5-b00d-304b49e26b49.jpg" />
-    <None Include="wwwroot\images\ca55be7e-fbef-4ee4-b677-c21fc4c3dd41.png" />
-    <None Include="wwwroot\images\cc4d8be6-ab2a-4f2b-b4e8-73db150a9f61.jpg" />
-    <None Include="wwwroot\images\d415263f-613e-4fbe-aae0-d603e8c0b78e.jpg" />
-    <None Include="wwwroot\images\d6d07a20-ec4f-4adf-a907-8b572f98f76c.jpg" />
-    <None Include="wwwroot\images\e0dfad69-c662-4ac7-b827-441fc3384388.jpg" />
-    <None Include="wwwroot\images\f03609c7-ca89-4eae-845e-eab4d6f17fbc.png" />
-    <None Include="wwwroot\images\f5a33449-4456-4cdb-ad3c-ce7329125a81.png" />
-    <None Include="wwwroot\images\feda0408-cc59-4e77-968a-208ce13c466b.png" />
-  </ItemGroup>
-
 </Project>
