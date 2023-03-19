@@ -68,5 +68,19 @@ namespace Gymbuddy.Controllers
             _unitOfWork.Save();
             return Ok(obj);
         }
+        [HttpPut("LikePost")]
+        public IActionResult LikePost(UserLike userLike)
+        {
+            var post = _db.Posts.Find(userLike.PostId);
+            post.Likes += 1;
+            _db.Posts.Update(post);
+            PostLikes model = new PostLikes();
+            model.UserId = userLike.UserId;
+            model.PostId = userLike.PostId;
+            _db.PostLikes.Add(model);
+            _db.SaveChanges();
+            return Ok();
+
+        }
     }
 }
