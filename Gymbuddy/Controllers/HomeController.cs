@@ -46,10 +46,14 @@ namespace Gymbuddy.Controllers
         }
         [Authorize]
         [HttpGet("GetPosts")]
-        public IActionResult GetPosts()
+        public IActionResult GetPosts(int Id)
         {
+            HomePosts model = new HomePosts();
             var posts = _unitOfWork.Post.GetAll(includeProperties: "User,Comments");
-            return Ok(posts);
+            model.Posts = posts.ToList();
+            var likes = _db.PostLikes.Where(x=>x.UserId == Id).ToList();
+            model.Likes = likes.ToList();
+            return Ok(model);
         }
         [HttpGet("getFilteredUsers")]
         public IActionResult GetFilteredUsers(string search)
