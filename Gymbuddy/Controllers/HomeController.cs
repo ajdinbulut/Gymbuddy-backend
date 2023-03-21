@@ -4,6 +4,7 @@ using Gymbuddy.Utilities;
 using GymBuddy.Core.Entities;
 using GymBuddy.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,7 @@ namespace Gymbuddy.Controllers
         private readonly IUnitOfWork _unitOfWork;
 
 
-        public HomeController(DB db, IWebHostEnvironment hostEnvironment, FileManager fileManager,IUnitOfWork unitOfWork)
+        public HomeController(DB db, IWebHostEnvironment hostEnvironment, FileManager fileManager, IUnitOfWork unitOfWork)
         {
             _db = db;
             _hostEnviroment = hostEnvironment;
@@ -46,14 +47,46 @@ namespace Gymbuddy.Controllers
         }
         [Authorize]
         [HttpGet("GetPosts")]
-        public IActionResult GetPosts(int Id)
+        public IActionResult GetPosts(string id)
         {
-            HomePosts model = new HomePosts();
-            var posts = _unitOfWork.Post.GetAll(includeProperties: "User,Comments");
-            model.Posts = posts.ToList();
-            var likes = _db.PostLikes.Where(x=>x.UserId == Id).ToList();
-            model.Likes = likes.ToList();
-            return Ok(model);
+            int Id = Convert.ToInt32(id);
+            HomePosts PostVM = new HomePosts();
+            var post = _unitOfWork.Post.GetAll(includeProperties: "PostLikes,User,Comments");
+            List<isPostLiked> isPostLikedList = new List<isPostLiked>();
+
+                foreach (var item in post)
+                {
+
+                    isPostLiked model = new isPostLiked();
+                    model.PostLikes = item.PostLikes;
+                    model.ImageUrl = item.ImageUrl;
+                    model.Comments = item.Comments;
+                    model.PostId = item.Id;
+                    model.User = item.User;
+                    model.UserId = item.UserId;
+                    model.Likes = item.Likes;
+                    model.Description = item.Description;
+                    if (_db.PostLikes.Any(x => x.UserId == Id && x.PostId == item.Id))
+                    {
+                        model.isLiked = true;
+                    }
+                    else
+                    {
+                        model.isLiked = false;
+                    }
+                    isPostLikedList.Add(model);
+
+
+                }
+            
+            PostVM.Posts = isPostLikedList;
+            PostVM.PostLikes = _unitOfWork.PostLikes.GetAll();
+
+            if (PostVM.Posts != null)
+            {
+                return Ok(PostVM);
+            }
+            return Ok();
         }
         [HttpGet("getFilteredUsers")]
         public IActionResult GetFilteredUsers(string search)

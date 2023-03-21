@@ -5,7 +5,8 @@ namespace Gymbuddy.Models
 {
     public class HomePosts
     {
-        public List<Post>? Posts { get; set; }
-        public List<PostLikes> Likes { get; set; }
+        public IEnumerable<isPostLiked> Posts { get; set; }
+        public IEnumerable<Comment> Comments { get; set; }
+        public IEnumerable<PostLikes> PostLikes { get; set; }
     }
 }
