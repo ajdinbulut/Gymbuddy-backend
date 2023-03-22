@@ -45,7 +45,6 @@ namespace Gymbuddy.Controllers
             _db.SaveChanges();
             return Ok(model);
         }
-        [Authorize]
         [HttpGet("GetPosts")]
         public IActionResult GetPosts(string id)
         {
@@ -108,13 +107,23 @@ namespace Gymbuddy.Controllers
         [HttpPut("LikePost")]
         public IActionResult LikePost(UserLike userLike)
         {
+            var postLikes = _db.PostLikes.Any(x => x.PostId == userLike.PostId && x.UserId == userLike.UserId);
             var post = _db.Posts.Find(userLike.PostId);
-            post.Likes += 1;
-            _db.Posts.Update(post);
             PostLikes model = new PostLikes();
-            model.UserId = userLike.UserId;
-            model.PostId = userLike.PostId;
-            _db.PostLikes.Add(model);
+            if (postLikes == false)
+            {
+                post.Likes++;
+                _db.Posts.Update(post);
+                model.UserId = userLike.UserId;
+                model.PostId = userLike.PostId;
+                _db.PostLikes.Add(model);
+                _db.SaveChanges();
+                return Ok();
+            }
+            post.Likes--;
+            _db.Posts.Update(post);
+            var obj = _db.PostLikes.FirstOrDefault(x => x.UserId == userLike.UserId && x.PostId == userLike.PostId);
+            _db.PostLikes.Remove(obj);
             _db.SaveChanges();
             return Ok();
 
