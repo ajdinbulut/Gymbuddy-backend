@@ -1,4 +1,5 @@
 using Gymbuddy;
+using Gymbuddy.Hubs;
 using Gymbuddy.Utilities;
 using GymBuddy.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,7 +8,6 @@ using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 // Add services to the container.
@@ -19,6 +19,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<FileManager>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
@@ -48,9 +49,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors(builder =>
 {
-    builder.AllowAnyOrigin()
+    builder.SetIsOriginAllowed(x=>true)
            .AllowAnyMethod()
-           .AllowAnyHeader();
+           .AllowAnyHeader()
+           .AllowCredentials();
 });
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -63,6 +65,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseAuthorization();
+app.MapHub<ChatHub>("/chatHub");
 
 app.MapControllers();
 
