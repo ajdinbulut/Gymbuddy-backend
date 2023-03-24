@@ -42,6 +42,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<DB>(options => options.UseNpgsql(
 "Host=localhost;Port=5432;Database=Gymbuddy;Username=postgres;Password=postgres"));
 var app = builder.Build();
