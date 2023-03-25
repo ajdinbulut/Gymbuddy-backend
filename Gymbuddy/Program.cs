@@ -1,10 +1,15 @@
 using Gymbuddy;
 using Gymbuddy.Hubs;
+using Gymbuddy.Middleware;
 using Gymbuddy.Utilities;
 using GymBuddy.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.WebSockets;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -20,9 +25,6 @@ builder.Services.AddScoped<FileManager>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,16 +43,34 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = false,
         ValidateIssuerSigningKey = true
     };
+    o.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+
+            // If the request is for our hub...
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/hubs/chat")))
+            {
+                // Read the token out of the query string
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<DB>(options => options.UseNpgsql(
 "Host=localhost;Port=5432;Database=Gymbuddy;Username=postgres;Password=postgres"));
 var app = builder.Build();
+app.UseMiddleware<WebSocketsMiddleWare>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors(builder =>
 {
-    builder.SetIsOriginAllowed(x=>true)
+    builder.SetIsOriginAllowed(x => true)
            .AllowAnyMethod()
            .AllowAnyHeader()
            .AllowCredentials();
@@ -61,12 +81,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseWebSockets();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseAuthorization();
-app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatHub>("/hub/chatHub");
 
 app.MapControllers();
 
