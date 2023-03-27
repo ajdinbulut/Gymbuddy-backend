@@ -1,7 +1,9 @@
 ﻿using Gymbuddy.Models;
 using GymBuddy.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Runtime.CompilerServices;
 
 namespace Gymbuddy.Controllers
@@ -17,10 +19,11 @@ namespace Gymbuddy.Controllers
             _db = db;
             _unitOfWork = unitOfWork;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet("getUsers")]
         public IActionResult getUsers()
         {
-            var users = _unitOfWork.User.GetAll(includeProperties: "UserRoles,UserRoles.Role");
+            var users = _unitOfWork.User.GetAll(includeProperties: "UserRoles.Role");
             return Ok(users);
         }
     }

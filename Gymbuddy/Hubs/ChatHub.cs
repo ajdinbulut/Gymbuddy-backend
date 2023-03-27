@@ -34,6 +34,15 @@ namespace Gymbuddy.Hubs
 
             return base.OnConnectedAsync();
         }
+        public override Task OnDisconnectedAsync(Exception? exception)
+        {
+            var obj = Context.User.FindFirst("Id").Value;
+            var userId = Convert.ToInt32(obj);
+            var user = _db.Connection.FirstOrDefault(x=>x.UserId == userId);
+            _db.Connection.Remove(user);
+            _db.SaveChanges();
+            return base.OnDisconnectedAsync(exception);
+        }
     }
 }
 

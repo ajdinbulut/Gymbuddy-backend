@@ -5,6 +5,7 @@ using GymBuddy.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.CodeDom.Compiler;
@@ -93,17 +94,18 @@ namespace Gymbuddy.Controllers
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var roles = _unitOfWork.UserRole.GetAll().Where(x=>x.UserId == user.Id).ToList();
-            var claims = new[]
+            var roles = _unitOfWork.UserRole.GetAll(includeProperties:"Role").Where(x => x.UserId == user.Id);
+            var claims = new List<Claim>();
+                claims.Add(new Claim("Email", user.Email));
+                claims.Add(new Claim("Lastname", user.LastName));
+                claims.Add(new Claim("Username", user.UserName));
+                claims.Add(new Claim("FirstName", user.FirstName));
+                foreach(var item in roles)
             {
-                new Claim("Email", user.Email),
-                new Claim("Lastname", user.LastName),
-                new Claim("Username", user.UserName),
-                new Claim("FirstName", user.FirstName),
-                new Claim("Roles", roles.ToString()),
-                new Claim("Id",user.Id.ToString()),
-                new Claim("ProfilePhoto",user.ImageUrl),
+                claims.Add(new Claim(ClaimTypes.Role, item.Role.Name));
             };
+                claims.Add(new Claim("Id", user.Id.ToString()));
+                claims.Add(new Claim("ProfilePhoto", user.ImageUrl));
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
               _config["Jwt:Audience"],
