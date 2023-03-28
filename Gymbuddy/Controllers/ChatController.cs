@@ -1,6 +1,7 @@
 ﻿using Gymbuddy.Models;
 using GymBuddy.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gymbuddy.Controllers
 {
@@ -16,7 +17,7 @@ namespace Gymbuddy.Controllers
         [HttpGet("getChat")]
         public IActionResult GetChat([FromQuery]ChatModel model)
         {
-            var chat = _db.Chats.Where(x => x.UserSenderId == model.UserSender && x.UserReceiverId == model.UserReceiver).ToList();
+            var chat = _db.Chats.Include(x => x.UserReceiver).Include(x => x.UserSender).Where(x => x.UserSenderId == model.UserSender && x.UserReceiverId == model.UserReceiver);
             return Ok(chat);
         }
         [HttpPost("add")]
