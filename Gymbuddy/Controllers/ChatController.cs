@@ -31,7 +31,8 @@ namespace Gymbuddy.Controllers
             obj.SentAt = DateTime.Now;
             _db.Chats.Add(obj);
             _db.SaveChanges();
-            return Ok();
+            var rtrn = _db.Chats.Include(x => x.UserSender).FirstOrDefault(x => x.SentAt == obj.SentAt);
+            return Ok(rtrn);
         }
     }
 }
