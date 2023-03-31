@@ -24,6 +24,8 @@ namespace Gymbuddy.Controllers
         public IActionResult Add(MessageModel model)
         {
             Chat obj = new Chat();
+            ChatConnection connections= new ChatConnection();
+
             obj.UserSenderId = model.UserSender;
             obj.UserReceiverId = model.UserReceiver;
             obj.Message = model.Message;
@@ -31,8 +33,16 @@ namespace Gymbuddy.Controllers
             obj.SentAt = DateTime.Now;
             _db.Chats.Add(obj);
             _db.SaveChanges();
-            var rtrn = _db.Chats.Include(x => x.UserSender).FirstOrDefault(x => x.SentAt == obj.SentAt);
-            return Ok(rtrn);
+            var connectionList = _db.Connection.Where(x => x.UserId == model.UserReceiver).ToList();
+            connections.Chat = _db.Chats.Include(x => x.UserSender).FirstOrDefault(x => x.SentAt == obj.SentAt);
+            if(connectionList != null)
+            {
+                foreach(var item in connectionList)
+                {
+                    connections.ConnectionId = item.ConnectionId;
+                }
+            }
+            return Ok(connections);
         }
     }
 }

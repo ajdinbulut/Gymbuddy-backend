@@ -43,6 +43,11 @@ namespace Gymbuddy.Hubs
             _db.SaveChanges();
             return base.OnDisconnectedAsync(exception);
         }
+        public async Task SendToUser(string receiverConnectionId, string message)
+        {
+                        
+            await Clients.Client(receiverConnectionId).SendAsync("Message", message);
+        }
     }
 }
 
