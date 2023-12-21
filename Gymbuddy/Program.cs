@@ -80,12 +80,8 @@ app.UseCors(builder =>
            .AllowAnyHeader()
            .AllowCredentials();
 });
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
 app.UseWebSockets();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
