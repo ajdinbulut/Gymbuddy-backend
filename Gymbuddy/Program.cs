@@ -67,8 +67,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDbContext<DB>(options => options.UseNpgsql(
-"Host=localhost;Port=5432;Database=Gymbuddy;Username=postgres;Password=postgres"));
+builder.Services.AddDbContext<DB>(options => options.UseSqlServer(
+"Server=tcp:gymbuddy-buli.database.windows.net,1433;Initial Catalog=Gymbuddy;Persist Security Info=False;User ID=gymbuddy;Password=Test123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
 var app = builder.Build();
 app.UseMiddleware<WebSocketsMiddleWare>();
 app.UseAuthentication();
